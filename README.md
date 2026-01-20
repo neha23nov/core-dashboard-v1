@@ -3,12 +3,12 @@
 A Admin Dashboard for managing application data, fees, and other administrative tasks. The dashboard provides an intuitive interface with modals, dynamic tables, and API integration using Axios.
 
 # Features
-1)Student Dashboard:
+1) Student Dashboard:
  View student profiles and details.
  Track student enrollment, status, and performance.
 Add and Track student information.
 
-2)Fee Dashboard:
+2) Fee Dashboard:
 View and manage fees for users.
 Collect and track fee payments.
 Dynamic tables to show fee records.
@@ -18,10 +18,10 @@ API Integration: Axios is used for RESTful API requests.
 Routing: React Router for seamless navigation.
 
 # Technologies Used
-Frontend: React.js, React Router, Axios, TailwindCSS / CSS
-Backend: Node.js, Express.js
-Database: MongoDB
-Other Tools: npm, dotenv
+# Frontend: React.js, React Router, Axios, TailwindCSS / CSS
+# Backend: Node.js, Express.js
+# Database: MongoDB
+# Other Tools: npm, dotenv
 
 <pre>
 # Project Structure
@@ -41,7 +41,7 @@ admin-dashboard/
 </pre>
 
 # Future Enhancements
-Role-based authentication (Admin, Staff, User)
-Graphs and analytics for fees and users
-Export reports (PDF/Excel)
-Notifications and reminders for pending fees
+1) Role-based authentication (Admin, Staff, User)
+2) Graphs and analytics for fees and users
+3) Export reports (PDF/Excel)
+4) Notifications and reminders for pending fees
