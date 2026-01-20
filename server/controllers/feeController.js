@@ -17,3 +17,10 @@ exports.getFeesByStudent = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// exports.getFeeById = async (req, res) => {
+//   const fee = await Fee.findById(req.params.id).populate("student");
+//   if (!fee) return res.status(404).json({ message: "Fee not found" });
+//   res.json(fee);
+// };
+

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
+import SideBar from "../components/SideBar";
+
 
 export default function StudentManagement() {
   const [students, setStudents] = useState([]);
@@ -72,9 +74,10 @@ export default function StudentManagement() {
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] text-slate-900">
+      <SideBar />
       {/* SIDEBAR */}
       {/* SIDEBAR */}
-<aside className="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full">
+{/* <aside className="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full">
   <div className="px-6 py-5 flex items-center gap-3 font-bold text-lg">
     <div className="w-8 h-8 bg-black text-white rounded flex items-center justify-center font-bold">
       M
@@ -118,7 +121,7 @@ export default function StudentManagement() {
   
     </div>
   </div>
-</aside>
+</aside> */}
 
 
       {/* MAIN */}

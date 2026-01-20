@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 
+
+
 export default function StudentDetails() {
   const { id } = useParams();
   const [student, setStudent] = useState(null);

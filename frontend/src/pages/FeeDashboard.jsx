@@ -1,293 +1,233 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
+import SideBar from "../components/SideBar";
 
 export default function FeeDashboard() {
-    const [fees, setFees] = useState([]);
+  const navigate = useNavigate();
 
-useEffect(() => {
-  fetchFees();
-}, []);
+  const [fees, setFees] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
-const fetchFees = async () => {
-  try {
-    const res = await axios.get("http://localhost:5000/api/fees");
-    setFees(res.data);
-  } catch (err) {
-    console.error("Fetch fees error", err);
-  }
-};
+  // 🔹 Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFee, setSelectedFee] = useState(null);
+
+  useEffect(() => {
+    fetchFees();
+  }, []);
+
+  const fetchFees = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("http://localhost:5000/api/fees");
+
+      if (Array.isArray(res.data)) {
+        setFees(res.data);
+      } else if (Array.isArray(res.data.fees)) {
+        setFees(res.data.fees);
+      } else {
+        setFees([]);
+      }
+    } catch (err) {
+      console.error("Fetch fees error", err);
+      setFees([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredFees = fees.filter((f) =>
+    `${f.refId || ""} ${f.student?.fullName || ""}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   return (
-    <div style={{ fontFamily: "Inter, system-ui, sans-serif", background: "#f8fafc", minHeight: "100vh" }}>
+    <div className="flex min-h-screen bg-[#f8fafc] text-slate-900">
+      {/* SIDEBAR */}
+      <SideBar />
 
-      {/* HEADER */}
-      <header
-        style={{
-          height: 64,
-          background: "#ffffff",
-          borderBottom: "1px solid #e5e7eb",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 24px",
-          gap: 24
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              background: "#000",
-              color: "#fff",
-              borderRadius: 8,
-              fontWeight: 700,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            M
+      {/* MAIN */}
+      <main style={{ flex: 1, padding: 32, marginLeft: 256 }}>
+        {/* HEADER */}
+        <div style={titleRow}>
+          <div>
+            <h1 style={{ fontSize: 28, margin: 0 }}>Fee Management</h1>
+            <p style={{ color: "#64748b", marginTop: 4 }}>
+              Collection, receipts, and financial records
+            </p>
           </div>
-          <strong>DEMO SCHOOL</strong>
+
+          <button
+            style={btnBlack}
+            onClick={() => navigate("/fees/collect")}
+          >
+            + Collect Fee
+          </button>
         </div>
 
-        <div style={{ flex: 1 }}>
-          <input
-            placeholder="Search student by name, father name, Adm no"
-            style={{
-              width: "100%",
-              maxWidth: 640,
-              padding: "10px 16px",
-              borderRadius: 999,
-              border: "none",
-              background: "#f1f5f9",
-              fontSize: 14
-            }}
-          />
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <select style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid #e5e7eb" }}>
-            <option>2025-2026</option>
-          </select>
-          <div style={{ width: 36, height: 36, borderRadius: "50%", border: "2px solid #22c55e" }} />
-        </div>
-      </header>
-
-      {/* BODY */}
-      <div style={{ display: "flex" }}>
-
-        {/* SIDEBAR */}
-        <aside
+        {/* SEARCH */}
+        <input
+          placeholder="Search by Ref ID or Student Name"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           style={{
-            width: 260,
-            background: "#ffffff",
-            borderRight: "1px solid #e5e7eb",
-            minHeight: "calc(100vh - 64px)",
-            padding: 16
+            marginTop: 20,
+            padding: 10,
+            width: 320,
+            borderRadius: 8,
+            border: "1px solid #e5e7eb",
           }}
-        >
-          {[
-            "Attendance",
-            "Examination",
-            "Transport",
-            "Hostel"
-          ].map(item => (
-            <div key={item} style={{ padding: "10px 14px", borderRadius: 8, color: "#475569" }}>
-              {item}
-            </div>
-          ))}
+        />
 
-          <div
-            style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              background: "#000",
-              color: "#fff",
-              fontWeight: 600,
-              marginTop: 8
-            }}
-          >
-            Fees
-          </div>
+        {/* TABS */}
+        <div style={tabs}>
+          <Tab label="All Transactions" active />
+          {/* <Tab label="Payment History" />
+          <Tab label="Due History" />
+          <Tab label="Fee Slip" /> */}
+        </div>
 
-          {[
-            "Communication",
-            "Point of Sale",
-            "Payroll"
-          ].map(item => (
-            <div key={item} style={{ padding: "10px 14px", borderRadius: 8, color: "#475569" }}>
-              {item}
-            </div>
-          ))}
+        {/* TABLE */}
+        <div style={tableWrap}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead style={{ background: "#f8fafc" }}>
+              <tr>
+                {[
+                  "Ref ID",
+                  "Student",
+                  "Fee Type",
+                  "Date",
+                  "Mode",
+                  "Amount",
+                  "Status",
+                  "Actions",
+                ].map((h) => (
+                  <th key={h} style={th}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
 
-          <div style={{ position: "absolute", bottom: 24 }}>
-            <strong>Admin User</strong>
-            <div style={{ fontSize: 12, color: "#64748b" }}>Principal</div>
-          </div>
-        </aside>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="8" style={tdCenter}>
+                    Loading...
+                  </td>
+                </tr>
+              ) : filteredFees.length === 0 ? (
+                <tr>
+                  <td colSpan="8" style={tdCenter}>
+                    No records found
+                  </td>
+                </tr>
+              ) : (
+                filteredFees.map((fee) => (
+                  <Row
+                    key={fee._id}
+                    fee={fee}
+                    onView={(f) => {
+                      setSelectedFee(f);
+                      setShowModal(true);
+                    }}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </main>
 
-        {/* MAIN */}
-        <main style={{ flex: 1, padding: 32 }}>
+      {/* ================= VIEW MODAL ================= */}
+      {showModal && selectedFee && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl w-[600px] p-6 relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-xl"
+            >
+              ✕
+            </button>
 
-          {/* TITLE */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <h1 style={{ fontSize: 28, margin: 0 }}>Fee Management</h1>
-              <p style={{ color: "#64748b", marginTop: 4 }}>
-                Collection, receipts, and financial records
+            <h2 className="text-xl font-bold mb-1">
+              Fee Details
+            </h2>
+            <p className="text-sm text-slate-500 mb-4">
+              Ref ID: {selectedFee.refId}
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <p>
+                <strong>Student:</strong>{" "}
+                {selectedFee.student?.fullName}
+              </p>
+              <p>
+                <strong>Class:</strong>{" "}
+                {selectedFee.student?.classSection}
+              </p>
+              <p>
+                <strong>Fee Type:</strong>{" "}
+                {selectedFee.feeType}
+              </p>
+              <p>
+                <strong>Amount:</strong> ₹{selectedFee.amount}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                {selectedFee.status}
+              </p>
+              <p>
+                <strong>Payment Mode:</strong>{" "}
+                {selectedFee.paymentMode || "-"}
               </p>
             </div>
 
-            <div style={{ display: "flex", gap: 12 }}>
-              <button style={btnWhite}>Fee Slip</button>
-              <button style={btnWhite}>Reports</button>
-              <button style={btnBlack}>+ Collect Fee</button>
-              <button style={btnIcon}>⚙</button>
-            </div>
-          </div>
-
-          {/* TABS */}
-          <div style={{ display: "flex", gap: 24, marginTop: 32, borderBottom: "1px solid #e5e7eb" }}>
-            <Tab active label="All Transactions" />
-            <Tab label="Payment History" />
-            <Tab label="Dues History" />
-            <Tab label="Concession Log" />
-            <Tab label="Student Ledger" />
-          </div>
-
-          {/* SEARCH + FILTER */}
-          <div style={{ display: "flex", gap: 16, marginTop: 24 }}>
-            <input
-              placeholder="Search by student name or transaction ID..."
-              style={{
-                flex: 1,
-                padding: "12px 16px",
-                borderRadius: 10,
-                background: "#1e293b",
-                color: "#fff",
-                border: "none"
-              }}
-            />
-            <button style={btnWhite}>Filters</button>
-          </div>
-
-          {/* TABLE */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              border: "1px solid #e5e7eb",
-              marginTop: 24,
-              overflow: "hidden"
-            }}
-          >
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead style={{ background: "#f8fafc" }}>
-                <tr>
-                  {["Ref ID","Student","Fee Type","Date","Mode","Amount","Status","Actions"].map(h => (
-                    <th key={h} style={th}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-
-             <tbody>
-  {fees.map((f) => (
-    <Row
-      key={f._id}
-      id={f.refId}
-      name={f.student?.fullName}
-      type={f.feeType}
-date={
-  f.createdAt
-    ? new Date(f.createdAt).toISOString().slice(0, 10)
-    : "-"
-}
-
-      mode={f.paymentMode}
-      amount={`₹${f.amount}`}
-      status={f.status === "PAID" ? "Paid" : "Pending"}
-    />
-  ))}
-</tbody>
-
-            </table>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: 16,
-                color: "#64748b",
-                fontSize: 14
-              }}
-            >
-              Showing <strong>1–4</strong> of <strong>1,248</strong> transactions
-              <div style={{ display: "flex", gap: 8 }}>
-                <button style={btnIcon}>‹</button>
-                <button style={btnIcon}>›</button>
+            {/* PAID */}
+            {selectedFee.status === "PAID" && (
+              <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                <p className="text-green-700 font-semibold">
+                  Payment Successful
+                </p>
+                <p>
+                  Date:{" "}
+                  {new Date(
+                    selectedFee.createdAt
+                  ).toLocaleDateString()}
+                </p>
+                {/* <button className="mt-3 border px-4 py-2 rounded">
+                  Print Receipt
+                </button> */}
               </div>
-            </div>
+            )}
+
+            {/* PENDING */}
+            {selectedFee.status === "PENDING" && (
+              <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+                <p className="text-yellow-700 font-semibold">
+                  Payment Pending
+                </p>
+                <button
+                  className="mt-3 bg-black text-white px-4 py-2 rounded"
+                  onClick={() =>
+                    navigate(`/fees/collect?ref=${selectedFee.refId}`)
+                  }
+                >
+                  Collect Fee
+                </button>
+              </div>
+            )}
           </div>
-
-        </main>
-      </div>
-
-      {/* DARK MODE BUTTON */}
-      <button
-        style={{
-          position: "fixed",
-          bottom: 24,
-          right: 24,
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          background: "#fff",
-          border: "1px solid #e5e7eb",
-          boxShadow: "0 10px 20px rgba(0,0,0,.1)"
-        }}
-      >
-        🌙
-      </button>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ===== HELPERS ===== */
-
-const btnWhite = {
-  padding: "10px 16px",
-  borderRadius: 10,
-  border: "1px solid #e5e7eb",
-  background: "#fff",
-  fontWeight: 500
-};
-
-const btnBlack = {
-  padding: "10px 16px",
-  borderRadius: 10,
-  background: "#000",
-  color: "#fff",
-  fontWeight: 600,
-  border: "none"
-};
-
-const btnIcon = {
-  width: 40,
-  height: 40,
-  borderRadius: 10,
-  border: "1px solid #e5e7eb",
-  background: "#fff"
-};
-
-const th = {
-  padding: 16,
-  textAlign: "left",
-  fontSize: 12,
-  color: "#64748b"
-};
+/* ================= COMPONENTS ================= */
 
 function Tab({ label, active }) {
   return (
@@ -296,7 +236,7 @@ function Tab({ label, active }) {
         paddingBottom: 12,
         fontWeight: active ? 700 : 500,
         borderBottom: active ? "2px solid #000" : "none",
-        color: active ? "#000" : "#64748b"
+        color: active ? "#000" : "#64748b",
       }}
     >
       {label}
@@ -304,16 +244,21 @@ function Tab({ label, active }) {
   );
 }
 
-function Row({ id, name, type, date, mode, amount, status }) {
-  const paid = status === "Paid";
+function Row({ fee, onView }) {
+  const paid = fee.status === "PAID";
+
   return (
     <tr style={{ borderTop: "1px solid #e5e7eb" }}>
-      <td style={tdMuted}>{id}</td>
-      <td style={tdBold}>{name}</td>
-      <td style={td}>{type}</td>
-      <td style={td}>{date}</td>
-      <td style={td}>{mode}</td>
-      <td style={{ ...td, fontWeight: 700 }}>{amount}</td>
+      <td style={tdMuted}>{fee.refId}</td>
+      <td style={tdBold}>{fee.student?.fullName}</td>
+      <td style={td}>{fee.feeType}</td>
+      <td style={td}>
+        {new Date(fee.createdAt).toLocaleDateString()}
+      </td>
+      <td style={td}>{fee.paymentMode || "-"}</td>
+      <td style={{ ...td, fontWeight: 700 }}>
+        ₹{fee.amount}
+      </td>
       <td style={td}>
         <span
           style={{
@@ -322,22 +267,56 @@ function Row({ id, name, type, date, mode, amount, status }) {
             fontSize: 12,
             background: paid ? "#dcfce7" : "#fff7ed",
             color: paid ? "#15803d" : "#c2410c",
-            border: `1px solid ${paid ? "#bbf7d0" : "#fed7aa"}`
           }}
         >
-          {status}
+          {paid ? "Paid" : "Pending"}
         </span>
       </td>
-     <td style={td}>
-  <button>View</button>
-  <button>Edit</button>
-  <button>Print</button>
-</td>
-
+      <td style={td}>
+        <button
+          onClick={() => onView(fee)}
+          className="text-blue-600 hover:underline"
+        >
+          View
+        </button>
+      </td>
     </tr>
   );
 }
 
+/* ================= STYLES ================= */
+
+const titleRow = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
+const tabs = {
+  display: "flex",
+  gap: 24,
+  marginTop: 32,
+  borderBottom: "1px solid #e5e7eb",
+};
+
+const tableWrap = {
+  background: "#fff",
+  borderRadius: 16,
+  border: "1px solid #e5e7eb",
+  marginTop: 24,
+  overflow: "hidden",
+};
+
+const th = { padding: 16, fontSize: 12, color: "#64748b" };
 const td = { padding: 16 };
 const tdBold = { padding: 16, fontWeight: 600 };
 const tdMuted = { padding: 16, color: "#94a3b8" };
+const tdCenter = { padding: 20, textAlign: "center" };
+
+const btnBlack = {
+  padding: "10px 16px",
+  borderRadius: 10,
+  background: "#000",
+  color: "#fff",
+  border: "none",
+};

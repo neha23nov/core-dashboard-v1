@@ -2,14 +2,15 @@ const mongoose = require("mongoose");
 
 const feeSchema = new mongoose.Schema(
   {
+    refId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Student",
-      required: true,
-    },
-
-    studentId: {
-      type: String,
       required: true,
     },
 
@@ -18,40 +19,15 @@ const feeSchema = new mongoose.Schema(
       required: true,
     },
 
-    date: {
-      type: Date,
-      required: true,
-    },
-
-    totalAmount: {
+    amount: {
       type: Number,
       required: true,
     },
 
-    concession: {
-      type: Number,
-      default: 0,
-    },
-
-    netPayable: {
-      type: Number,
-      required: true,
-    },
-
-    paymentMethod: {
+    paymentMode: {
       type: String,
       enum: ["Cash", "Card", "Online"],
-      required: true,
-    },
-
-    remarks: {
-      type: String,
-    },
-
-    refId: {
-      type: String,
-      required: true,
-      unique: true,
+      default: "Cash",
     },
 
     status: {
