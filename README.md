@@ -22,6 +22,7 @@ Frontend: React.js, React Router, Axios, TailwindCSS / CSS
 Backend: Node.js, Express.js
 Database: MongoDB
 Other Tools: npm, dotenv
+
 <pre>
 # Project Structure
 admin-dashboard/
