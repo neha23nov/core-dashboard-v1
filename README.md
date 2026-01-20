@@ -22,7 +22,7 @@ Frontend: React.js, React Router, Axios, TailwindCSS / CSS
 Backend: Node.js, Express.js
 Database: MongoDB
 Other Tools: npm, dotenv
-
+<pre>
 # Project Structure
 admin-dashboard/
 ├── backend/                 # Node.js + Express backend
@@ -37,6 +37,7 @@ admin-dashboard/
 │   │   ├── services/        # Axios API services
 │   │   └── App.js           # Main App component with routes
 └── README.md
+</pre>
 
 # Future Enhancements
 Role-based authentication (Admin, Staff, User)
