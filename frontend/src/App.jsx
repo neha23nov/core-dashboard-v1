@@ -4,6 +4,8 @@ import StudentDetails from "./pages/StudentDetails";
 import EditFeeModal from "./pages/EditFeeModal";
 import FeeView from "./pages/FeeView";
 
+
+
 import FeeDashboard from "./pages/FeeDashboard";
 import CollectFee from "./pages/CollectFee";
 export default function App() {
