@@ -2,8 +2,11 @@ const express=require("express");
 const dotenv=require("dotenv");
 const connectDB=require("./confiq/db");
 const studentRoutes=require("./routes/studentRoutes");
+const paymentsRoutes=require("./routes/paymentRoutes");
+
 
 const attendanceRoutes=require("./routes/attendanceRoutes");
+const challanRoutes=require("./routes/challanRoutes");
 const feeRoutes=require("./routes/feeRoutes");
 const cors=require("cors");
 const mongoose=require("mongoose");
@@ -30,6 +33,10 @@ app.use(
 app.use("/api/students", studentRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/fees",feeRoutes);
+app.use("/api/challans",challanRoutes);
+app.use("/api/payments",paymentsRoutes);
+
+
 
 
 
