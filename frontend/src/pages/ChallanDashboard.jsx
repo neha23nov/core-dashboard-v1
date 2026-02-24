@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import SideBar from "../../../../Admin-dashboard/frontend/src/components/SideBar";
+import SideBar from "../components/SideBar";
 
 export default function ChallanDashboard() {
   const [challans, setChallans] = useState([]);
