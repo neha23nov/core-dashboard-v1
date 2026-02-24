@@ -15,9 +15,7 @@ export default function FeeView() {
 
   const fetchFee = async () => {
     try {
-      const res = await axios.get(
-        `https://core-dashboard.onrender.com/api/fees/${id}`
-      );
+      const res = await `https://core-dashboard.onrender.com/api/fees/${id}`;
       setFee(res.data);
     } catch (err) {
       console.error("Fetch fee error", err);
@@ -35,13 +33,27 @@ export default function FeeView() {
 
       <h2>Fee Details</h2>
 
-      <p><strong>Ref ID:</strong> {fee.refId}</p>
-      <p><strong>Student:</strong> {fee.student?.fullName}</p>
-      <p><strong>Fee Type:</strong> {fee.feeType}</p>
-      <p><strong>Amount:</strong> ₹{fee.amount}</p>
-      <p><strong>Status:</strong> {fee.status}</p>
-      <p><strong>Payment Mode:</strong> {fee.paymentMode}</p>
-      <p><strong>Date:</strong> {new Date(fee.createdAt).toLocaleDateString()}</p>
+      <p>
+        <strong>Ref ID:</strong> {fee.refId}
+      </p>
+      <p>
+        <strong>Student:</strong> {fee.student?.fullName}
+      </p>
+      <p>
+        <strong>Fee Type:</strong> {fee.feeType}
+      </p>
+      <p>
+        <strong>Amount:</strong> ₹{fee.amount}
+      </p>
+      <p>
+        <strong>Status:</strong> {fee.status}
+      </p>
+      <p>
+        <strong>Payment Mode:</strong> {fee.paymentMode}
+      </p>
+      <p>
+        <strong>Date:</strong> {new Date(fee.createdAt).toLocaleDateString()}
+      </p>
     </div>
   );
 }
