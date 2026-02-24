@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import StudentManagement from "./pages/studentManage";
 import StudentDetails from "./pages/StudentDetails";
 import EditFeeModal from "./pages/EditFeeModal";
+import ChallanDashboard from "./pages/ChallanDashboard";
 import FeeView from "./pages/FeeView";
 
 
@@ -21,6 +22,8 @@ export default function App() {
 <Route path="/students" element={<StudentManagement />} />
 <Route path="/fees" element={<FeeDashboard />} />
 <Route path="/fees/view/:refId" element={<FeeView />} />
+<Route path="/challans" element={<ChallanDashboard />} />
+
 
 
 

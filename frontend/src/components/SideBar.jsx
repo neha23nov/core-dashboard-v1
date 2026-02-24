@@ -6,6 +6,7 @@ export default function SideBar() {
     // { label: "Dashboard", path: "/dashboard" },
     { label: "Students", path: "/students" },
     { label: "Fees", path: "/fees" },
+        { label: "Challans", path: "/challans" },
   ];
 
   return (

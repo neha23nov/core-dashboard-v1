@@ -16,7 +16,7 @@ export default function FeeView() {
   const fetchFee = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/fees/${id}`
+        `https://core-dashboard.onrender.com/api/fees/${id}`
       );
       setFee(res.data);
     } catch (err) {

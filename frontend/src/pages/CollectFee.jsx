@@ -27,7 +27,7 @@ export default function CollectFee() {
 
   const submitFee = async () => {
     try {
-      await axios.post("http://localhost:5000/api/fees/collect", {
+      await axios.post("https://core-dashboard.onrender.com/api/fees/collect", {
         studentId: form.studentId,
         feeType: form.feeType,
         amount: Number(form.amount),
